@@ -1,21 +1,5 @@
 //----------------------------[Explication]----------------------------------
-//  1-- > 2-- > 3-- > 4-- > 5-- > null;
-
-// let singlyLinkedList = {
-//     head: {
-//         value: 1,
-//         next: {
-//         value: 2,
-//         next: {
-//             value: 3,
-//             next: {
-//             value: 4,
-//             next: null,
-//             },
-//         },
-//         },
-//     },
-// };
+//  1 <--> 2 <--> 3 <--> 4 <--> 5 <--> null;
 
 
 
@@ -25,28 +9,34 @@ class Node {
     constructor(value) {
         this.value = value;
         this.next = null;
+        this.prev = null;
     }
 }
-
-class MySinglyLinkedList {
+class MyDoublyLinkedList {
     constructor(value) {
         this.head = {
-            value: value,
-            next: null,
+        value: value,
+        next: null,
+        prev: null,
         };
         this.tail = this.head;
+
         this.length = 1;
     };
-    uppend(value){
+    uppend(value) {
         const newNode = new Node(value);
+        newNode.prev = this.tail;
         this.tail.next = newNode;
         this.tail = newNode;
+
         this.length++;
+
         return this;
     };
     prepend(value){
         const newNode = new Node(value);
         newNode.next = this.head;
+        this.head.prev = newNode;
         this.head = newNode;
         this.length++;
         return this;
@@ -62,19 +52,32 @@ class MySinglyLinkedList {
         const holdingPointer = firstPointer.next;
         firstPointer.next = newNode;
         newNode.next = holdingPointer;
+        //other direction:
+        newNode.prev = firstPointer;
+        holdingPointer.prev = newNode;
 
         this.length++;
 
         return this;
     };
     getTheIndex(index) {
-        let counter = 0;
-        let currentNode = this.head;
-        while (counter !== index) {
-            currentNode = currentNode.next;
-            counter++;
+        if(index < (this.length/2)){
+            let counter = 0;
+            let currentNode = this.head;
+            while (counter !== index) {
+                currentNode = currentNode.next;
+                counter++;
+            }
+            return currentNode;
+        }else{
+            let counter = this.length - 1;
+            let currentNode = this.tail;
+            while (counter !== index) {
+                currentNode = currentNode.prev;
+                counter--;
+            }
+            return currentNode;
         }
-        return currentNode;
     };
     remove(index){
         if (index >= this.length) {
@@ -83,6 +86,7 @@ class MySinglyLinkedList {
 
         const firstPointer = this.getTheIndex(index - 1);
         firstPointer.next = firstPointer.next.next;
+        firstPointer.next.prev = firstPointer;
 
         this.length--;
 
@@ -90,5 +94,4 @@ class MySinglyLinkedList {
     };
 }
 
-// Instance
-let myLinkedList = new MySinglyLinkedList(1);
+let myDoublyLinkedList = new MyDoublyLinkedList(1);
